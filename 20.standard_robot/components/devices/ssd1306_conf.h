@@ -19,15 +19,46 @@
 //#define STM32G0
 //#define STM32C0
 
+// type of oled chip
+//#define SSD1106
+//#define SSD1306
+#define SSD1309
+//#define SSD1327
+
 // Choose a bus
 #define SSD1306_USE_I2C
 //#define SSD1306_USE_SPI
 
 // I2C Configuration
-#define SSD1306_I2C             I2C2
-#define SSD1306_I2C_PORT        hi2c2
-#define SSD1306_I2C_ADDR        (0x3D << 1)     // ssd1306, ssd1309 
-                                // (0x3C << 1)  // default ssd1106
+#define SSD_I2C_PORT        hi2c2
+#define SSD_I2C             I2C2
+#ifdef SSD1106
+    #define SSD_I2C_ADDR        (0x3C << 1)
+    #define SSD_WIDTH           128
+    #define SSD_HEIGHT          64
+    #define PIXEL_PER_BYTE      8
+#elif defined(SSD1306)
+    #define SSD_I2C_ADDR        (0x3D << 1)
+    #define SSD_WIDTH           128
+    #define SSD_HEIGHT          64
+    #define PIXEL_PER_BYTE      8
+#elif defined(SSD1309)
+    #define SSD_I2C_ADDR        (0x3D << 1)
+    #define SSD_WIDTH           128
+    #define SSD_HEIGHT          64
+    #define PIXEL_PER_BYTE      8
+#elif defined(SSD1327)
+    #define SSD_I2C_ADDR        (0x3D << 1)
+    #define SSD_WIDTH           128
+    #define SSD_HEIGHT          128
+    #define PIXEL_PER_BYTE      2
+#else
+#endif
+
+// If your screen horizontal axis does not start
+// in column 0 you can use this define to
+// adjust the horizontal offset
+// #define SSD1306_X_OFFSET
 
 // SPI Configuration
 //#define SSD1306_SPI_PORT        hspi1
@@ -46,26 +77,13 @@
 // # define SSD1306_INVERSE_COLOR
 
 // Include only needed fonts
+#define SSD1306_INCLUDE_FONT_5x8
 #define SSD1306_INCLUDE_FONT_6x8
 #define SSD1306_INCLUDE_FONT_7x10
 #define SSD1306_INCLUDE_FONT_11x18
 #define SSD1306_INCLUDE_FONT_16x26
-
 #define SSD1306_INCLUDE_FONT_16x24
-
 #define SSD1306_INCLUDE_FONT_16x15
 
-// The width of the screen can be set using this
-// define. The default value is 128.
-#define SSD1306_WIDTH           128
-
-// If your screen horizontal axis does not start
-// in column 0 you can use this define to
-// adjust the horizontal offset
-// #define SSD1306_X_OFFSET
-
-// The height can be changed as well if necessary.
-// It can be 32, 64 or 128. The default value is 64.
-#define SSD1306_HEIGHT          64
 
 #endif /* __SSD1306_CONF_H__ */

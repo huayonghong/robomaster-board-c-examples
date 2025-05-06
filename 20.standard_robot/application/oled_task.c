@@ -58,8 +58,8 @@ void oled_task(void const * argument)
     // OLED_LOGO();
 
     ssd1306_Init();
-    //ssd1306_Fill(White);
-    //ssd1306_UpdateScreen();
+    ssd1306_Fill(Black);
+    ssd1306_UpdateScreen();
     ssd1306_Logo();
 
     i = 100;
@@ -98,10 +98,10 @@ void oled_task(void const * argument)
                 refresh_tick = 0;
                 // OLED_operate_gram(PEN_CLEAR);
                 // OLED_show_graphic(0, 1, &battery_box);
+
                 ssd1306_Fill(Black);
-                //ssd1306_UpdateScreen();
+
                 ssd1306_show_graphic(0, 1, &battery_box);
-                //ssd1306_UpdateScreen();
 
                 if(get_battery_percentage() < 10)
                 {

@@ -62,13 +62,6 @@
 
 /* vvv I2C config vvv */
 
-#ifndef SSD1306_I2C_PORT
-#define SSD1306_I2C_PORT        hi2c1
-#endif
-
-#ifndef SSD1306_I2C_ADDR
-#define SSD1306_I2C_ADDR        (0x3C << 1)
-#endif
 
 /* ^^^ I2C config ^^^ */
 
@@ -102,25 +95,16 @@
 /* ^^^ SPI config ^^^ */
 
 #if defined(SSD1306_USE_I2C)
-extern I2C_HandleTypeDef SSD1306_I2C_PORT;
+extern I2C_HandleTypeDef SSD_I2C_PORT;
 #elif defined(SSD1306_USE_SPI)
 extern SPI_HandleTypeDef SSD1306_SPI_PORT;
 #else
 #error "You should define SSD1306_USE_SPI or SSD1306_USE_I2C macro!"
 #endif
 
-// SSD1306 OLED height in pixels
-#ifndef SSD1306_HEIGHT
-#define SSD1306_HEIGHT          64
-#endif
-
-// SSD1306 width in pixels
-#ifndef SSD1306_WIDTH
-#define SSD1306_WIDTH           128
-#endif
 
 #ifndef SSD1306_BUFFER_SIZE
-#define SSD1306_BUFFER_SIZE   SSD1306_WIDTH * SSD1306_HEIGHT / 8
+#define SSD1306_BUFFER_SIZE   (SSD_WIDTH * SSD_HEIGHT / PIXEL_PER_BYTE)
 #endif
 
 // Enumeration for screen colors
@@ -214,9 +198,12 @@ void ssd1306_WriteCommand(uint8_t byte);
 void ssd1306_WriteData(uint8_t* buffer, size_t buff_size);
 SSD1306_Error_t ssd1306_FillBuffer(uint8_t* buf, uint32_t len);
 
+
+void ssd1327_Init(void);
+
+
 void ssd1306_Logo(void);
 void ssd1306_show_graphic(uint8_t x, uint8_t y, const picture_t *graphic);
-
 
 //_END_STD_C
 

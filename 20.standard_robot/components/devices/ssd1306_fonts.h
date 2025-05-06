@@ -3,6 +3,10 @@
 
 #include "ssd1306.h"
 
+#ifdef SSD1306_INCLUDE_FONT_5x8
+extern const SSD1306_Font_t Font_5x8;
+#endif
+
 #ifdef SSD1306_INCLUDE_FONT_6x8
 extern const SSD1306_Font_t Font_6x8;
 #endif
