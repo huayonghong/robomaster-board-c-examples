@@ -22,8 +22,8 @@
 // type of oled chip
 //#define SSD1106
 //#define SSD1306
-#define SSD1309
-//#define SSD1327
+//#define SSD1309
+#define SSD1327
 
 // Choose a bus
 #define SSD1306_USE_I2C

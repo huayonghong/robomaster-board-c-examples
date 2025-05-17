@@ -132,7 +132,8 @@ void ssd1327_Init(void) {
     ssd1306_WriteCommand(0x22);
 
     ssd1306_WriteCommand(SSD1327_SETFRONTCLOCKDIVIDER_OSCILLATORFREQUENCY);
-    ssd1306_WriteCommand(0x50);
+    //ssd1306_WriteCommand(0x50);
+    ssd1306_WriteCommand(0x91);
 
     ssd1306_WriteCommand(SSD1327_SELECTDEFAULTLINEARGRAYSCALETABLE);
 
@@ -295,7 +296,35 @@ void ssd1306_UpdateScreen(void) {
     ssd1306_WriteCommand(0x00);
     ssd1306_WriteCommand(0x7F);
 
-    HAL_I2C_Mem_Write(&SSD_I2C_PORT, SSD_I2C_ADDR, 0x40, 1, (uint8_t*)&SSD1306_Buffer, SSD1306_BUFFER_SIZE, 1000);    
+    HAL_I2C_Mem_Write(&SSD_I2C_PORT, SSD_I2C_ADDR, 0x40, 1, (uint8_t*)&SSD1306_Buffer, SSD1306_BUFFER_SIZE, 1000);
+#else
+    // Write data to each page of RAM. Number of pages
+    // depends on the screen height:
+    //
+    //  * 32px   ==  4 pages
+    //  * 64px   ==  8 pages
+    //  * 128px  ==  16 pages
+    for(uint8_t i = 0; i < SSD_HEIGHT/8; i++) {
+        ssd1306_WriteCommand(0xB0 + i); // Set the current RAM page address.
+        ssd1306_WriteCommand(0x00 + SSD1306_X_OFFSET_LOWER);
+        ssd1306_WriteCommand(0x10 + SSD1306_X_OFFSET_UPPER);
+        ssd1306_WriteData(&SSD1306_Buffer[SSD_WIDTH*i],SSD_WIDTH);
+    }
+#endif
+}
+
+void ssd1306_UpdateRegion(uint8_t x, uint8_t y, uint8_t w, uint8_t h)
+{
+    #ifdef SSD1327
+    ssd1306_WriteCommand(SSD1327_SETCOLUMNADDRESS);
+    ssd1306_WriteCommand(x);
+    ssd1306_WriteCommand(x + w - 1);
+
+    ssd1306_WriteCommand(SSD1327_SETROWADDRESS);
+    ssd1306_WriteCommand(y);
+    ssd1306_WriteCommand(y + h - 1);
+
+    HAL_I2C_Mem_Write(&SSD_I2C_PORT, SSD_I2C_ADDR, 0x40, 1, (uint8_t*)&SSD1306_Buffer, SSD1306_BUFFER_SIZE, 1000);
 #else
     // Write data to each page of RAM. Number of pages
     // depends on the screen height:

@@ -48,7 +48,7 @@ static uint8_t refresh_tick = 0;
   */
 void oled_task(void const * argument)
 {
-    //char buf[128];
+    char dev_status[128] = { 0 };
     uint8_t i;
     uint8_t show_col, show_row;
     error_list_local = get_error_list_point();
@@ -61,6 +61,9 @@ void oled_task(void const * argument)
     ssd1306_Fill(Black);
     ssd1306_UpdateScreen();
     ssd1306_Logo();
+    ssd1306_UpdateScreen();
+    osDelay(3000);
+    ssd1306_Fill(Black);
 
     i = 100;
     while(i--)
@@ -72,8 +75,10 @@ void oled_task(void const * argument)
         }
         osDelay(10);
     }
+
     while(1)
     {
+        int dev_index = 0;
         //use i2c ack to check the oled
         //if(OLED_check_ack())
         if(ssd1306_check_ack())
@@ -86,7 +91,9 @@ void oled_task(void const * argument)
         if(last_oled_error == 1 && now_oled_errror == 0)
         {
             //OLED_init();
-            ssd1306_Init();
+            //ssd1306_Init();
+            //ssd1306_Fill(Black);
+            // ssd1306_UpdateScreen();
         }
 
         if(now_oled_errror == 0)
@@ -103,24 +110,8 @@ void oled_task(void const * argument)
 
                 ssd1306_show_graphic(0, 1, &battery_box);
 
-                if(get_battery_percentage() < 10)
-                {
-                    //OLED_printf(9, 2, "%d", get_battery_percentage());
-                    ssd1306_SetCursor(9, 4);
-                    ssd1306_printf(Font_6x8, White, "%d", get_battery_percentage());
-                }
-                else if(get_battery_percentage() < 100)
-                {
-                    //OLED_printf(6, 2, "%d", get_battery_percentage());
-                    ssd1306_SetCursor(6, 4);
-                    ssd1306_printf(Font_6x8, White, "%d", get_battery_percentage());
-                }
-                else
-                {
-                    //OLED_printf(3, 2, "%d", get_battery_percentage());
-                    ssd1306_SetCursor(3, 4);
-                    ssd1306_printf(Font_6x8, White, "%d", get_battery_percentage());
-                }
+                ssd1306_SetCursor(3, 4);
+                ssd1306_printf(Font_6x8, White, "%3d", get_battery_percentage());
 
                 //OLED_show_string(90, 27, "DBUS");
                 //OLED_show_graphic(115, 27, &check_box[error_list_local[DBUS_TOE].error_exist]);
@@ -157,7 +148,9 @@ void oled_task(void const * argument)
                     ssd1306_show_graphic(show_col + 18, show_row, &check_box[error_list_local[i].error_exist]);
                 }
 
+
                 //OLED_refresh_gram();
+                
                 ssd1306_UpdateScreen();
             }
         }
